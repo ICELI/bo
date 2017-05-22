@@ -14,9 +14,8 @@ export function initMixin(Bo: Class) {
 
         this.$el = el
 
-        console.log(this)
         return this
-    };
+    }
 
     Bo.prototype._init = function (o: Object) {
         const vm = this
