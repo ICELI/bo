@@ -2,18 +2,44 @@
 'use strict';
 
 /*  */
+let uid = 0;
 
-/**
- * vue wheels
- * @param o
- * @constructor
- */
-function Bo(o) {
-    this.init(o);
+function initMixin(Bo) {
+    Bo.prototype.$mount = function (el) {
+        if(typeof el === 'string' && typeof window !== 'undefined') {
+            el = document.querySelector(el);
+            if(!el) {
+                el = document.createElement('div');
+            }
+        } else {
+            el = undefined;
+        }
+
+        this.$el = el;
+
+        console.log(this);
+    };
+
+    Bo.prototype._init = function (o) {
+        const vm = this;
+
+        vm._uid = uid++;
+
+        vm.$options = o || {};
+        console.log(JSON.stringify(o));
+        if (vm.$options.el) {
+            vm.$mount(vm.$options.el);
+        }
+    };
+
+
 }
 
-Bo.prototype.init = function (o) {
-    console.log(JSON.stringify(o));
-};
+function Bo(options) {
+    this._init(options);
+}
 
-new Bo({test: 'Hello Booooooooooooooooooom!'});
+initMixin(Bo);
+new Bo({el: '#app'});
+
+module.exports = Bo;
