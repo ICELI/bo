@@ -17,7 +17,7 @@ function initMixin(Bo) {
 
         this.$el = el;
 
-        console.log(this);
+        return this
     };
 
     Bo.prototype._init = function (o) {
@@ -26,6 +26,7 @@ function initMixin(Bo) {
         vm._uid = uid++;
 
         vm.$options = o || {};
+
         console.log(JSON.stringify(o));
         if (vm.$options.el) {
             vm.$mount(vm.$options.el);
@@ -40,6 +41,5 @@ function Bo(options) {
 }
 
 initMixin(Bo);
-new Bo({el: '#app'});
 
 module.exports = Bo;
