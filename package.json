@@ -5,6 +5,7 @@
   "main": "dist/bo.js",
   "scripts": {
     "dev": "rollup -w -c build/build.js",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "commitmsg": "validate-commit-msg"
   },
   "config": {
