@@ -6,6 +6,25 @@
 }(this, (function () { 'use strict';
 
 /*  */
+
+function compile(html, options) {
+    var re = /{{([^}}]+)?}}/g, reExp = /(^( )?(if|for|else|switch|case|break|{|}))(.*)?/g, code = 'var r=[];\n', cursor = 0, match;
+    var add = function(line, js) {
+        js? (code += line.match(reExp) ? line + '\n' : 'r.push(' + line + ');\n') :
+            (code += line != '' ? 'r.push("' + line.replace(/"/g, '\\"') + '");\n' : '');
+        return add;
+    };
+    while(match = re.exec(html)) {
+        add(html.slice(cursor, match.index))(match[1], true);
+        cursor = match.index + match[0].length;
+    }
+    add(html.substr(cursor, html.length - cursor));
+    code += 'return r.join("");';
+    return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
+}
+
+/*  */
+
 let uid = 0;
 
 function initMixin(Bo) {
@@ -21,6 +40,9 @@ function initMixin(Bo) {
 
         this.$el = el;
 
+        this.$el.innerHTML = compile(this.$el.innerHTML, this._data);
+
+
         return this
     };
 
@@ -28,8 +50,12 @@ function initMixin(Bo) {
         const vm = this;
 
         vm._uid = uid++;
+        vm._watchers = [];
+        vm._directives  = [];
 
         vm.$options = o || {};
+        vm._data = vm.$options.data;
+
         console.log(JSON.stringify(o));
         if (vm.$options.el) {
             vm.$mount(vm.$options.el);
@@ -39,11 +65,6 @@ function initMixin(Bo) {
 
 }
 
-/**
- * vue wheels
- * @param {Object} options
- * @constructor Bo
- */
 function Bo(options) {
     this._init(options);
 }

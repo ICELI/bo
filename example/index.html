@@ -6,7 +6,12 @@
     <script src="../dist/bo.js"></script>
 </head>
 <body>
-<div id="app">{{msg}}</div>
+<div id="app">
+    <p>Hello {{this.msg}}</p>
+    <div>
+        <input type="text" b-model="msg" /> <button type="button">$mount</button>
+    </div>
+</div>
 <script>
     var vm = new Bo({
         el: '#app',

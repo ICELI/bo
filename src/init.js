@@ -1,8 +1,11 @@
 /* @flow */
+
+import {compile} from './compiler'
+
 let uid = 0
 
 export function initMixin(Bo: Class) {
-    Bo.prototype.$mount = function (el) {
+    Bo.prototype.$mount = function (el: string | Element) {
         if(typeof el === 'string' && typeof window !== 'undefined') {
             el = document.querySelector(el)
             if(!el) {
@@ -14,6 +17,9 @@ export function initMixin(Bo: Class) {
 
         this.$el = el
 
+        this.$el.innerHTML = compile(this.$el.innerHTML, this._data)
+
+
         return this
     }
 
@@ -21,8 +27,12 @@ export function initMixin(Bo: Class) {
         const vm = this
 
         vm._uid = uid++
+        vm._watchers = []
+        vm._directives  = []
 
         vm.$options = o || {}
+        vm._data = vm.$options.data
+
         console.log(JSON.stringify(o))
         if (vm.$options.el) {
             vm.$mount(vm.$options.el)
