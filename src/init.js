@@ -1,14 +1,15 @@
 /* @flow */
 
 import {compile} from './compiler'
+import {observe} from './observer'
 
 let uid = 0
 
 export function initMixin(Bo: Class) {
     Bo.prototype.$mount = function (el: string | Element) {
-        if(typeof el === 'string' && typeof window !== 'undefined') {
+        if (typeof el === 'string' && typeof window !== 'undefined') {
             el = document.querySelector(el)
-            if(!el) {
+            if (!el) {
                 el = document.createElement('div')
             }
         } else {
@@ -26,18 +27,39 @@ export function initMixin(Bo: Class) {
     Bo.prototype._init = function (o: Object) {
         const vm = this
 
+        vm._isVue = true
         vm._uid = uid++
         vm._watchers = []
-        vm._directives  = []
+        vm._directives = []
 
         vm.$options = o || {}
         vm._data = vm.$options.data
 
-        console.log(JSON.stringify(o))
+        for(let key in vm._data) {
+            this._proxy(key)
+        }
+
+        observe(vm._data, this)
+
         if (vm.$options.el) {
             vm.$mount(vm.$options.el)
         }
     }
 
+    Bo.prototype._proxy = function (val: any) {
+
+        let self = this
+
+        Object.defineProperty(self, val, {
+            configurable: true,
+            enumerable: true,
+            get() {
+                return self._data[val]
+            },
+            set(v) {
+                self._data[val] = v
+            }
+        })
+    }
 
 }
