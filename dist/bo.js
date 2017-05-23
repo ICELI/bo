@@ -1,5 +1,9 @@
 // Bo.js v0.1.0 by Iceli (c) 2017-2017.
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.Bo = factory());
+}(this, (function () { 'use strict';
 
 /*  */
 let uid = 0;
@@ -35,11 +39,17 @@ function initMixin(Bo) {
 
 }
 
+/**
+ * vue wheels
+ * @param {Object} options
+ * @constructor Bo
+ */
 function Bo(options) {
     this._init(options);
 }
 
 initMixin(Bo);
-new Bo({el: '#app'});
 
-module.exports = Bo;
+return Bo;
+
+})));

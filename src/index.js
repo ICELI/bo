@@ -10,5 +10,5 @@ function Bo(options) {
 }
 
 initMixin(Bo)
-new Bo({el: '#app'})
+
 export default Bo
