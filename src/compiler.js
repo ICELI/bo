@@ -13,5 +13,5 @@ export function compile(html, options) {
     }
     add(html.substr(cursor, html.length - cursor));
     code += 'return r.join("");';
-    return new Function(code.replace(/[\r\t\n]/g, '')).apply(options);
+    return new Function(code.replace(/[\r\t\n]/g, ''));
 }

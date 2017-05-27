@@ -18,8 +18,7 @@ export function initMixin(Bo: Class) {
 
         this.$el = el
 
-        this.$el.innerHTML = compile(this.$el.innerHTML, this._data)
-
+        this._compile(this.$el.innerHTML, this._data)
 
         return this
     }
@@ -32,6 +31,7 @@ export function initMixin(Bo: Class) {
         vm._watchers = []
         vm._directives = []
 
+        // initData
         vm.$options = o || {}
         vm._data = vm.$options.data
 
@@ -41,6 +41,7 @@ export function initMixin(Bo: Class) {
 
         observe(vm._data, this)
 
+        // init
         if (vm.$options.el) {
             vm.$mount(vm.$options.el)
         }
@@ -62,4 +63,9 @@ export function initMixin(Bo: Class) {
         })
     }
 
+    Bo.prototype._compile = function () {
+        let render = this.$options.render = compile(this.$el.innerHTML) || function () {}
+
+        this.$el.innerHTML = render.apply(this._data)
+    }
 }
